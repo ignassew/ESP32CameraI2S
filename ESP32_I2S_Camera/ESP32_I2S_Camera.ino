@@ -1,7 +1,7 @@
 #include "OV7670.h"
 
-#include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7735.h> // Hardware-specific library
+// #include <Adafruit_GFX.h>    // Core graphics library
+// #include <Adafruit_ST7735.h> // Hardware-specific library
 
 #include <WiFi.h>
 #include <WiFiMulti.h>
@@ -11,32 +11,32 @@
 const int SIOD = 21; //SDA
 const int SIOC = 22; //SCL
 
-const int VSYNC = 34;
-const int HREF = 35;
+const int VSYNC = 18;
+const int HREF = 14;
 
-const int XCLK = 32;
-const int PCLK = 33;
+const int XCLK = 27;
+const int PCLK = 19;
 
-const int D0 = 27;
-const int D1 = 17;
-const int D2 = 16;
-const int D3 = 15;
-const int D4 = 14;
-const int D5 = 13;
-const int D6 = 12;
-const int D7 = 4;
+const int D0 = 26;
+const int D1 = 12;
+const int D2 = 25;
+const int D3 = 13;
+const int D4 = 17;
+const int D5 = 5;
+const int D6 = 16;
+const int D7 = 23;
 
-const int TFT_DC = 2;
-const int TFT_CS = 5;
+// const int TFT_DC = 2;
+// const int TFT_CS = 5;
 //DIN <- MOSI 23
 //CLK <- SCK 18
 
-#define ssid1        "YOUR_WIFI_SSID"
-#define password1    "YOUR_PASSWORD"
+#define ssid1        "Galaxy A51 63ED"
+#define password1    "ldna3775"
 //#define ssid2        ""
 //#define password2    ""
 
-Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, 0/*no reset*/);
+// Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, 0/*no reset*/);
 OV7670 *camera;
 
 WiFiMulti wifiMulti;
@@ -115,42 +115,42 @@ void setup()
   camera = new OV7670(OV7670::Mode::QQVGA_RGB565, SIOD, SIOC, VSYNC, HREF, XCLK, PCLK, D0, D1, D2, D3, D4, D5, D6, D7);
   BMP::construct16BitHeader(bmpHeader, camera->xres, camera->yres);
   
-  tft.initR(INITR_BLACKTAB);
-  tft.fillScreen(0);
+  // tft.initR(INITR_BLACKTAB);
+  // tft.fillScreen(0);
   server.begin();
 }
 
-void displayY8(unsigned char * frame, int xres, int yres)
-{
-  tft.setAddrWindow(0, 0, yres - 1, xres - 1);
-  int i = 0;
-  for(int x = 0; x < xres; x++)
-    for(int y = 0; y < yres; y++)
-    {
-      i = y * xres + x;
-      unsigned char c = frame[i];
-      unsigned short r = c >> 3;
-      unsigned short g = c >> 2;
-      unsigned short b = c >> 3;
-      tft.pushColor(r << 11 | g << 5 | b);
-    }  
-}
+// void displayY8(unsigned char * frame, int xres, int yres)
+// {
+//   tft.setAddrWindow(0, 0, yres - 1, xres - 1);
+//   int i = 0;
+//   for(int x = 0; x < xres; x++)
+//     for(int y = 0; y < yres; y++)
+//     {
+//       i = y * xres + x;
+//       unsigned char c = frame[i];
+//       unsigned short r = c >> 3;
+//       unsigned short g = c >> 2;
+//       unsigned short b = c >> 3;
+//       tft.pushColor(r << 11 | g << 5 | b);
+//     }  
+// }
 
-void displayRGB565(unsigned char * frame, int xres, int yres)
-{
-  tft.setAddrWindow(0, 0, yres - 1, xres - 1);
-  int i = 0;
-  for(int x = 0; x < xres; x++)
-    for(int y = 0; y < yres; y++)
-    {
-      i = (y * xres + x) << 1;
-      tft.pushColor((frame[i] | (frame[i+1] << 8)));
-    }  
-}
+// void displayRGB565(unsigned char * frame, int xres, int yres)
+// {
+//   tft.setAddrWindow(0, 0, yres - 1, xres - 1);
+//   int i = 0;
+//   for(int x = 0; x < xres; x++)
+//     for(int y = 0; y < yres; y++)
+//     {
+//       i = (y * xres + x) << 1;
+//       tft.pushColor((frame[i] | (frame[i+1] << 8)));
+//     }  
+// }
 
 void loop()
 {
   camera->oneFrame();
   serve();
-  displayRGB565(camera->frame, camera->xres, camera->yres);
+  // displayRGB565(camera->frame, camera->xres, camera->yres);
 }
